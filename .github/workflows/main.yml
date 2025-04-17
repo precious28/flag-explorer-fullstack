@@ -48,12 +48,13 @@ jobs:
         run: dotnet publish src/FlagExplorer.Api/FlagExplorer.Api.csproj -c Release -o backend-publish
 
       - name: Upload Backend Artifact
-        uses: actions/upload-artifact@v3.1.3
+        uses: actions/upload-artifact@v4
         with:
           name: backend
           path: backend-publish
           retention-days: 5
           if-no-files-found: error
+          compression-level: 9
 
   frontend:
     name: Frontend Build & Test
@@ -91,9 +92,10 @@ jobs:
           CI: true
 
       - name: Upload Frontend Artifact
-        uses: actions/upload-artifact@v3.1.3
+        uses: actions/upload-artifact@v4
         with:
           name: frontend
           path: frontend/dist
           retention-days: 5
           if-no-files-found: error
+          compression-level: 9
