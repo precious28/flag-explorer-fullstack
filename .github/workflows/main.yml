@@ -10,6 +10,9 @@ jobs:
   backend:
     name: Backend Build & Test
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     
     defaults:
       run:
@@ -17,10 +20,10 @@ jobs:
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4  # Updated to latest version
+        uses: actions/checkout@v4
 
       - name: Setup .NET 8
-        uses: actions/setup-dotnet@v4  # Updated to latest version
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.0.x
 
@@ -49,11 +52,15 @@ jobs:
         with:
           name: backend
           path: backend-publish
-          retention-days: 5  # Added retention period
+          retention-days: 5
+          if-no-files-found: error
 
   frontend:
     name: Frontend Build & Test
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
 
     defaults:
       run:
@@ -61,22 +68,22 @@ jobs:
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4  # Updated to latest version
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4  # Updated to latest version
+        uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'  # Added caching
+          cache: 'npm'
           cache-dependency-path: frontend/package-lock.json
 
       - name: Install Frontend Dependencies
-        run: npm ci  # Changed to ci for cleaner installs
+        run: npm ci
 
       - name: Run Frontend Tests
         run: npm test -- --watchAll=false --coverage
         env:
-          CI: true  # Added CI environment variable
+          CI: true
 
       - name: Build Frontend
         run: npm run build
@@ -88,4 +95,5 @@ jobs:
         with:
           name: frontend
           path: frontend/dist
-          retention-days: 5  # Added retention period
+          retention-days: 5
+          if-no-files-found: error
