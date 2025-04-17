@@ -90,12 +90,17 @@ jobs:
         run: npm run build
         env:
           CI: true
+         
+      - name: List Build Directory
+        run: ls -la dist || ls -la build    
 
       - name: Upload Frontend Artifact
         uses: actions/upload-artifact@v4
         with:
           name: frontend
-          path: frontend/dist
+          path: |
+            frontend/dist
+            frontend/build
           retention-days: 5
           if-no-files-found: error
           compression-level: 9
