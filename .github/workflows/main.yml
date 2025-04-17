@@ -33,7 +33,9 @@ jobs:
           dotnet-version: 8.0.x
 
       - name: Restore Dependencies
-        run: dotnet restore FlagExplorer.sln
+        run: |
+            dotnet restore FlagExplorer.sln
+            dotnet restore ./tests/FlagExplorer.Tests/FlagExplorer.Tests.csproj
         
       - name: Cache NuGet packages
         uses: actions/cache@v3
