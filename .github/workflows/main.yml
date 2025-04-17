@@ -21,16 +21,16 @@ jobs:
           dotnet-version: 8.0.x
 
       - name: Restore Dependencies
-        run: dotnet restore FlagExplorer.sln
+        run: dotnet restore backend/FlagExplorer.sln
 
       - name: Build Solution
-        run: dotnet build FlagExplorer.sln --no-restore --configuration Release
+        run: dotnet build backend/FlagExplorer.sln --no-restore --configuration Release
 
       - name: Run Backend Tests
-        run: dotnet test tests/FlagExplorer.Tests/FlagExplorer.Tests.csproj --no-build --verbosity normal
+        run: dotnet test backend/tests/FlagExplorer.Tests/FlagExplorer.Tests.csproj --no-build --verbosity normal
 
       - name: Publish API for Deployment
-        run: dotnet publish src/FlagExplorer.Api/FlagExplorer.Api.csproj -c Release -o backend-publish
+        run: dotnet publish backend/src/FlagExplorer.Api/FlagExplorer.Api.csproj -c Release -o backend-publish
 
       - name: Upload Backend Artifact
         uses: actions/upload-artifact@v3
@@ -67,4 +67,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: frontend
-          path: frontend/dist
+          path: frontend/build
