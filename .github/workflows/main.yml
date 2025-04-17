@@ -58,17 +58,26 @@ jobs:
                 --collect:"XPlat Code Coverage"
                 
       - name: Publish API for Deployment
-        run: dotnet publish src/FlagExplorer.Api/FlagExplorer.Api.csproj -c Release -o backend-publish
+        run: dotnet publish src/FlagExplorer.Api/FlagExplorer.Api.csproj -c Release -o ./backend-publish
+
+      # Debug step to verify the publish output location
+      - name: Debug - Show Directory Structure
+        run: |
+          echo "Current directory:"
+          pwd
+          echo "Directory contents:"
+          ls -la
+          echo "Published contents:"
+          ls -la ./backend-publish || true
 
       - name: Upload Backend Artifact
         uses: actions/upload-artifact@v4
         with:
           name: backend
-          path: backend-publish
+          path: ./backend/backend-publish
           retention-days: 5
           if-no-files-found: error
           compression-level: 9
-
   frontend:
     name: Frontend Build & Test
     runs-on: ubuntu-latest
