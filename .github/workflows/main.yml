@@ -1,0 +1,70 @@
+name: CI/CD - Flag Explorer App
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  backend:
+    name: Backend Build & Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore Dependencies
+        run: dotnet restore FlagExplorer.sln
+
+      - name: Build Solution
+        run: dotnet build FlagExplorer.sln --no-restore --configuration Release
+
+      - name: Run Backend Tests
+        run: dotnet test tests/FlagExplorer.Tests/FlagExplorer.Tests.csproj --no-build --verbosity normal
+
+      - name: Publish API for Deployment
+        run: dotnet publish src/FlagExplorer.Api/FlagExplorer.Api.csproj -c Release -o backend-publish
+
+      - name: Upload Backend Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: backend
+          path: backend-publish
+
+  frontend:
+    name: Frontend Build & Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Install Frontend Dependencies
+        run: npm install
+        working-directory: frontend
+
+      - name: Run Frontend Tests
+        run: npm test -- --watchAll=false --coverage
+        working-directory: frontend
+
+      - name: Build Frontend
+        run: npm run build
+        working-directory: frontend
+
+      - name: Upload Frontend Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: frontend
+          path: frontend/dist
