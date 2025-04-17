@@ -44,11 +44,17 @@ jobs:
             ${{ runner.os }}-nuget-
 
       - name: Build Solution
-        run: dotnet build FlagExplorer.sln --no-restore --configuration Release
-
+        run: dotnet build FlagExplorer.sln --configuration Release
+      
       - name: Run Backend Tests
-        run: dotnet test tests/FlagExplorer.Tests/FlagExplorer.Tests.csproj --no-build --verbosity normal --collect:"XPlat Code Coverage"
-
+        run: |
+                dotnet test tests/FlagExplorer.Tests/FlagExplorer.Tests.csproj \
+                --configuration Release \
+                --no-restore \
+                --verbosity normal \
+                --logger "console;verbosity=detailed" \
+                --collect:"XPlat Code Coverage"
+                
       - name: Publish API for Deployment
         run: dotnet publish src/FlagExplorer.Api/FlagExplorer.Api.csproj -c Release -o backend-publish
 
